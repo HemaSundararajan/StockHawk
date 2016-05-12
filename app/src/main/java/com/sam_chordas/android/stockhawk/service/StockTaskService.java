@@ -6,6 +6,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.support.annotation.IntDef;
 import android.util.Log;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -18,6 +19,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URLEncoder;
 
 /**
@@ -26,12 +29,20 @@ import java.net.URLEncoder;
  * and is used for the initialization and adding task as well.
  */
 public class StockTaskService extends GcmTaskService{
-  private String LOG_TAG = StockTaskService.class.getSimpleName();
 
+  private String LOG_TAG = StockTaskService.class.getSimpleName();
   private OkHttpClient client = new OkHttpClient();
   private Context mContext;
   private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
+
+  private static final int STATUS_SYNC_OK = 0;
+  private static final int STATUS_NO_NETWORK = 1;
+  private static final int STATUS_INVALID_INPUT = 2;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({STATUS_SYNC_OK,STATUS_NO_NETWORK,STATUS_INVALID_INPUT})
+  public @interface stockStatus {}
 
   public StockTaskService(){}
 
@@ -112,6 +123,7 @@ public class StockTaskService extends GcmTaskService{
       urlString = urlStringBuilder.toString();
       try{
         getResponse = fetchData(urlString);
+
         result = GcmNetworkManager.RESULT_SUCCESS;
         try {
           ContentValues contentValues = new ContentValues();
@@ -130,7 +142,6 @@ public class StockTaskService extends GcmTaskService{
         e.printStackTrace();
       }
     }
-
     return result;
   }
 

@@ -44,12 +44,17 @@ public class Utils {
       }
     } catch (JSONException e){
       Log.e(LOG_TAG, "String to JSON failed: " + e);
+    } catch (NullPointerException e) {
+      System.out.println("Can change here also");
+      //return
     }
     return batchOperations;
   }
 
   public static String truncateBidPrice(String bidPrice){
-    bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+    if(!bidPrice.equals("null") &&bidPrice !=null && !bidPrice.isEmpty()) {
+      bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+    }
     return bidPrice;
   }
 

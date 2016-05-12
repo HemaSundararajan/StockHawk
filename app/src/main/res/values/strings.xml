@@ -1,6 +1,6 @@
 <resources>
   <string name="app_name">Stock Hawk</string>
-
+  <string name="google_app_id">gcmlearning-1290</string>
   <string name="action_example">Example action</string>
 
   <string name="action_settings">Settings</string>
@@ -10,4 +10,5 @@
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="empty_stock_list">No stock data is available</string>
 </resources>

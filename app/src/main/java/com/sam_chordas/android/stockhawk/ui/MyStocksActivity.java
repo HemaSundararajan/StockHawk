@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -38,7 +40,8 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 
 import org.w3c.dom.Text;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener{
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -140,7 +143,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
       }
     });
-
     ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
     mItemTouchHelper = new ItemTouchHelper(callback);
     mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -172,6 +174,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
   @Override
   public void onResume() {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    sp.registerOnSharedPreferenceChangeListener(this);
     super.onResume();
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
   }
@@ -232,7 +236,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
-    updateEmptyView();
+    ;
   }
 
   @Override
@@ -245,4 +249,20 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
           networkToast();
       }
   }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        int text = sharedPreferences.getInt(key, 0);
+        if(text == StockTaskService.getStatusInvalidInput() || text == StockTaskService.getStatusNoNetworkk()) {
+            if(emptyTextView != null && recyclerView != null) {
+                recyclerView.setVisibility(View.INVISIBLE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                if(text == StockTaskService.getStatusInvalidInput()) {
+                    emptyTextView.setText(getString(R.string.empty_stock_list) + "." + getString(R.string.invalid_input_message));
+                } else if (text == StockTaskService.getStatusNoNetworkk()) {
+                    emptyTextView.setText(getString(R.string.empty_stock_list) + "." + getString(R.string.network_toast));
+                }
+            }
+        }
+    }
 }

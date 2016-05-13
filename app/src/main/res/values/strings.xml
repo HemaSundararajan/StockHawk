@@ -10,5 +10,7 @@
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="invalid_input_message">Seems like the stock symbol provided is incorrect!</string>
   <string name="empty_stock_list">No stock data is available</string>
+  <string name="pref_stock_status_key" translatable="false">stock-status</string>
 </resources>

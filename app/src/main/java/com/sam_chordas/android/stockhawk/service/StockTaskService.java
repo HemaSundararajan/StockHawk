@@ -3,14 +3,17 @@ package com.sam_chordas.android.stockhawk.service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.util.Log;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -43,6 +46,33 @@ public class StockTaskService extends GcmTaskService{
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({STATUS_SYNC_OK,STATUS_NO_NETWORK,STATUS_INVALID_INPUT})
   public @interface stockStatus {}
+
+  @StockTaskService.stockStatus
+  public static int getStatusSyncOk() {
+    return STATUS_SYNC_OK;
+  }
+
+  @StockTaskService.stockStatus
+  public static int getStatusNoNetworkk() {
+    return STATUS_NO_NETWORK;
+  }
+
+  @StockTaskService.stockStatus
+  public static int getStatusInvalidInput() {
+    return STATUS_INVALID_INPUT;
+  }
+
+  public void setStatusSyncOk() {
+    setStockStatus(STATUS_SYNC_OK);
+  }
+
+  public void setStatusNoNetwork() {
+    setStockStatus(STATUS_NO_NETWORK);
+  }
+
+  public void setStatusInvalidInput() {
+    setStockStatus(STATUS_INVALID_INPUT);
+  }
 
   public StockTaskService(){}
 
@@ -140,9 +170,20 @@ public class StockTaskService extends GcmTaskService{
         }
       } catch (IOException e){
         e.printStackTrace();
+      } catch (NumberFormatException e) {
+        setStockStatus(STATUS_INVALID_INPUT);
       }
     }
     return result;
+  }
+
+  private void setStockStatus(@stockStatus int stockStatus) {
+    Integer value = stockStatus;
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+    SharedPreferences.Editor spe = sp.edit();
+    String pref = mContext.getString(R.string.pref_stock_status_key);
+    spe.putInt(pref,value);
+    spe.commit();
   }
 
 }

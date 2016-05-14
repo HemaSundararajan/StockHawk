@@ -184,6 +184,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     recyclerView.setVisibility(View.GONE);
     emptyTextView.setVisibility(View.VISIBLE);
     emptyTextView.setText(getString(R.string.empty_stock_list) + "." + getString(R.string.network_toast));
+    emptyTextView.setContentDescription(emptyTextView.getText());
   }
 
   public void restoreActionBar() {
@@ -259,8 +260,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 emptyTextView.setVisibility(View.VISIBLE);
                 if(text == StockTaskService.getStatusInvalidInput()) {
                     emptyTextView.setText(getString(R.string.empty_stock_list) + "." + getString(R.string.invalid_input_message));
+                    emptyTextView.setContentDescription(emptyTextView.getText());
                 } else if (text == StockTaskService.getStatusNoNetworkk()) {
                     emptyTextView.setText(getString(R.string.empty_stock_list) + "." + getString(R.string.network_toast));
+                    emptyTextView.setContentDescription(emptyTextView.getText());
                 }
             }
         }

@@ -6,6 +6,7 @@
       android:title="@string/action_change_units"
       android:icon="@drawable/ic_attach_money_white_24dp"
       android:orderInCategory="99"
+      android:contentDescription="Button to change units of stock display"
       app:showAsAction="always"/>
   <item android:id="@+id/action_settings"
       android:title="@string/action_settings"

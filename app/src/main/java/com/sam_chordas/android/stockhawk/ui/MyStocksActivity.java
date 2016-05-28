@@ -98,8 +98,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             new RecyclerViewItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
-                    //TODO:
-                    // do something on item click
+                    Cursor c = mCursorAdapter.getCursor();
+                    c.moveToPosition(position);
+                    String sym = c.getString(c.getColumnIndex("symbol"));
+                    Intent intent = new Intent(getApplicationContext(),line_graph.class);
+                    intent.putExtra("symbol",sym);
+                    startActivity(intent);
                 }
             }));
      recyclerView.setAdapter(mCursorAdapter);
